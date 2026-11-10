@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hyrox · Ander Llamas · La porra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="porra_bf.css">
+</head>
+<body>
+
+<div class="bgv" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" src="bg.mp4"></video></div>
+<div class="status-bar" role="status">
+  <span><span class="dot" id="mktDot"></span><b id="mktState">ABIERTA</b></span>
+  <span>HYROX BARCELONA · 11 NOV</span>
+  <span>HORA ESPAÑA <b id="tMAD">--:--:--</b></span>
+  <span>APUESTAS <b id="tCount">—</b></span>
+</div>
+<div class="tape" aria-hidden="true"><div class="tape-track" id="tape1"></div></div>
+
+<main>
+  <div class="quote">
+    <section class="panel" aria-labelledby="idx">
+      <div class="ph"><span><span class="fn">ANDER LLAMAS &lt;HYROX&gt; GO</span> · Carrera Barcelona</span><span>Sin dinero real</span></div>
+      <div class="pb">
+        <div class="board-top"><div class="nyclock" id="bigClock">--:--:--</div><div class="nydate" id="bigDate">—<small>HYROX · BARCELONA</small></div></div>
+        <h1 class="idx-name" id="idx">¿Cuánto tarda<br><span>Ander Llamas?</span></h1>
+        <div class="idx-sub"><span>Carrera <b>Hyrox Barcelona</b></span><span>Salida <b>09:00</b></span><span>Apuesta <b>tiempo total</b></span></div>
+        <div class="bigq"><span class="px" id="bigPx">-- : -- : --</span><span class="chg up" id="chg">▲ la media de apuestas aparecerá aquí</span><span class="reveal">El tiempo real se revela al terminar la carrera</span></div>
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="clk">
+      <div class="ph"><span class="fn" id="clk">CIERRE DE APUESTAS</span><span>Opening bell</span></div>
+      <div class="pb clock-wrap">
+        <div>
+          <div class="led" id="clock">00:00:00:00</div>
+          <div class="led-units"><span>DÍAS</span><span>HORAS</span><span>MIN</span><span>SEG</span></div>
+          <div class="bell">
+            <p>Las apuestas se cierran a las <b>9:00 (hora de Barcelona)</b>, cuando sale Ander. Solo cuenta una apuesta por persona.</p>
+          </div>
+        </div>
+        <div class="sent" aria-live="polite">
+          <div class="ph" style="margin:0 -16px 10px;border-top:1px solid var(--line)"><span class="fn">MEDIA DEL MERCADO</span><span id="sMeta">Esperando órdenes</span></div>
+          <div class="sent-bar"><div class="sent-bull" id="sBull" style="width:50%">MEDIA —</div><div class="sent-bear" id="sBear" style="width:50%">—</div></div>
+          <div class="sent-meta"><span id="sMetaInner">—</span><span>Entre 30 min y 2 h</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="cols">
+    <section class="panel ticket" aria-labelledby="ot">
+      <div class="ph"><span class="fn" id="ot">ORDER TICKET &lt;GO&gt;</span><span>Tu apuesta</span></div>
+      <div class="pb">
+        <div id="halt"></div>
+        <form id="betForm" novalidate>
+          <p class="scope">Pon tu <b>nombre</b> y cuánto crees que tardará Ander en terminar el Hyrox.</p>
+          <div class="row"><div class="sym">$NOMBRE<small>Tu nombre o alias</small></div><div class="inp"><input id="nombre" type="text" maxlength="30" placeholder="Tu nombre" aria-label="Tu nombre"></div></div>
+          <div class="row"><div class="sym">$TIEMPO<small>Tiempo total estimado</small></div>
+            <div class="inp time"><input id="hh" type="number" min="0" max="2" inputmode="numeric" placeholder="h" aria-label="Horas"><em>:</em><input id="mm" type="number" min="0" max="59" inputmode="numeric" placeholder="mm" aria-label="Minutos"><em>:</em><input id="ss" type="number" min="0" max="59" inputmode="numeric" placeholder="ss" aria-label="Segundos"></div></div>
+          <div class="exec"><button type="submit" id="saveBtn" disabled>EJECUTAR ORDEN</button><span class="msg" id="saveStatus" role="status" aria-live="polite">Conectando…</span></div>
+        </form>
+      </div>
+    </section>
+
+    <div class="stack">
+      <section class="panel floor" aria-labelledby="fl">
+        <div class="ph"><span class="fn" id="fl">QUIÉN HA APOSTADO</span><span id="flMeta">—</span></div>
+        <div class="pb" id="board"><p class="empty">Cargando órdenes…</p></div>
+      </section>
+      <section class="panel" aria-labelledby="po">
+        <div class="ph"><span class="fn" id="po">RESULTADO</span><span>Cercanía al tiempo real</span></div>
+        <div class="pb">
+          <p class="note" id="resultNote">Cuando Ander cruce la meta, aquí aparecerá el tiempo real y el ranking por cercanía.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+  <footer><span>Porra interna y sin dinero. Nadie pierde nada, solo el orgullo.</span><span>Hyrox Barcelona · 11 nov 2026</span></footer>
+</main>
+<div class="tape rev" aria-hidden="true"><div class="tape-track" id="tape2"></div></div>
+
+<script>
+// ===== Configura aquí =====
+const API = 'https://script.google.com/macros/s/AKfycbwHTtYmfocin8sGFg3Jfu0LdbXFkvl11NQujhBRG4IiVYKFd2ez-qV_TrffPc4G864j/exec';
+const DEADLINE = new Date('2026-11-11T09:00:00+01:00');
+// ==========================
+
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, '0');
+const fmt = (s) => {
+  if (s == null || isNaN(s)) return '--:--:--';
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = Math.floor(s % 60);
+  return `${pad(h)}:${pad(m)}:${pad(x)}`;
+};
+let state = { cerrado: false, apuestas: [], real: null };
+
+function renderClock() {
+  const now = new Date();
+  $('tMAD').textContent = now.toLocaleTimeString('es-ES', { timeZone: 'Europe/Madrid', hour12: false });
+  $('bigClock').textContent = $('tMAD').textContent;
+  const diff = DEADLINE - now;
+  if (diff <= 0) {
+    $('clock').textContent = '00:00:00:00';
+  } else {
+    const d = Math.floor(diff / 864e5), h = Math.floor(diff / 36e5) % 24,
+          m = Math.floor(diff / 6e4) % 60, s = Math.floor(diff / 1e3) % 60;
+    $('clock').textContent = `${pad(d)}:${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+}
+
+function render() {
+  const closed = state.cerrado;
+  $('mktState').textContent = closed ? 'CERRADA' : 'ABIERTA';
+  $('mktDot').style.background = closed ? '#888' : '';
+  $('saveBtn').disabled = closed;
+  $('saveStatus').textContent = closed ? 'La porra ya está cerrada.' : '';
+  const list = state.apuestas;
+  $('tCount').textContent = list.length;
+  $('flMeta').textContent = `${list.length} apuesta${list.length === 1 ? '' : 's'}`;
+
+  if (list.length) {
+    const media = list.reduce((a, b) => a + b.segundos, 0) / list.length;
+    $('bigPx').textContent = fmt(media);
+    $('sMetaInner').textContent = `Media de ${list.length} apuesta${list.length === 1 ? '' : 's'}`;
+    $('chg').textContent = `▲ media de las apuestas`;
+  }
+
+  const real = state.real;
+  let rows = list.slice().sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+  if (real != null) {
+    rows = rows.map(r => ({ ...r, dist: Math.abs(r.segundos - real) }))
+               .sort((a, b) => a.dist - b.dist);
+    $('bigPx').textContent = fmt(real);
+    $('chg').textContent = '✔ tiempo real';
+    $('resultNote').textContent = `Tiempo real de Ander: ${fmt(real)}. Ranking por cercanía abajo.`;
+  }
+
+  $('board').innerHTML = rows.length
+    ? rows.map((r, i) => `<div class="row"><div class="sym">${i + 1}. ${esc(r.nombre)}</div><div class="inp">${fmt(r.segundos)}${real != null ? ` · ±${fmt(r.dist).slice(3)}` : ''}</div></div>`).join('')
+    : '<p class="empty">Todavía no hay apuestas. ¡Sé el primero!</p>';
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+async function load() {
+  try {
+    const r = await fetch(API);
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Error');
+    state = j;
+    $('saveStatus').textContent = '';
+    render();
+  } catch (e) {
+    $('saveStatus').textContent = 'No se pudo cargar. Recarga la página.';
+  }
+}
+
+$('betForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const nombre = $('nombre').value.trim();
+  const h = parseInt($('hh').value || '0', 10), m = parseInt($('mm').value || '0', 10), s = parseInt($('ss').value || '0', 10);
+  const segundos = h * 3600 + m * 60 + s;
+  if (!nombre) return ($('saveStatus').textContent = 'Pon tu nombre.');
+  if (segundos < 1800 || segundos > 7200) return ($('saveStatus').textContent = 'El tiempo debe estar entre 30 min y 2 h.');
+  $('saveBtn').disabled = true;
+  $('saveStatus').textContent = 'Enviando…';
+  try {
+    // text/plain evita el preflight CORS de Apps Script
+    const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ nombre, segundos }) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error);
+    $('saveStatus').textContent = '✔ Apuesta guardada';
+    $('nombre').value = ''; $('hh').value = ''; $('mm').value = ''; $('ss').value = '';
+    await load();
+  } catch (e) {
+    $('saveStatus').textContent = e.message || 'Error al guardar.';
+  } finally {
+    $('saveBtn').disabled = state.cerrado;
+  }
+});
+
+renderClock();
+setInterval(renderClock, 1000);
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>
